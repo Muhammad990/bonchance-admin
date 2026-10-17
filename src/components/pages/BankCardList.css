@@ -1,0 +1,136 @@
+.bank-card-container {
+  padding: 20px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Filter Bar Styles */
+.filter-bar {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #d2d2d2;
+  border-radius: 2px;
+  font-size: 14px;
+  width: 220px;
+  height: 36px;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.filter-input:focus {
+  border-color: #009688;
+}
+
+.search-btn {
+  background-color: #009688;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  box-sizing: border-box;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  background-color: #00796b;
+}
+
+/* Action Bar / Records Count Bar */
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  background: #ffffff;
+  padding: 12px 15px;
+  border-radius: 4px;
+  border: 1px solid #e6e6e6;
+}
+
+.total-records {
+  font-size: 14px;
+  color: #333333;
+  margin-left: auto;
+}
+
+/* Table Wrapper with Grid Lines */
+.table-responsive {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.bank-card-table {
+  width: 100%;
+  min-width: 1600px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.bank-card-table th, 
+.bank-card-table td {
+  padding: 12px 12px;
+  border: 1px solid #e6e6e6;
+  color: #333333;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.bank-card-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+/* Edit Button Style */
+.btn-edit {
+  background-color: #009688;
+  color: #ffffff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background-color: #00796b;
+}
+
+/* Expanded edit modal (scoped to this page) */
+.bank-card-container .withdrawal-modal-body {
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
+}
+
+.bank-card-container .account-section-title {
+  margin: 18px 0 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #e0e0e0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #009688;
+}
+
+.bank-card-container .withdrawal-modal-body label:first-of-type {
+  margin-top: 0;
+}

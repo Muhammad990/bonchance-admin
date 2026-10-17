@@ -1,0 +1,20 @@
+{
+  "name": "tui-admin-react",
+  "private": true,
+  "version": "1.0.0",
+  "description": "排单系统 admin — app.tuihotelonline.site ka pixel-perfect recreation, pure React (Vite)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

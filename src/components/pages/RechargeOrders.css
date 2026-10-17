@@ -1,0 +1,222 @@
+.recharge-container {
+  padding: 20px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Filter Bar Styles */
+.filter-bar {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-input, .filter-select {
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #d2d2d2;
+  border-radius: 2px;
+  font-size: 14px;
+  width: 220px;
+  height: 36px;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.filter-input:focus, .filter-select:focus {
+  border-color: #009688;
+}
+
+.search-btn {
+  background-color: #009688;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  box-sizing: border-box;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  background-color: #00796b;
+}
+
+/* Summary Bar Styles */
+.summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.summary-cards-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.blue-card {
+  background-color: #009688;
+}
+
+.orange-card {
+  background-color: #ff5722;
+}
+
+.total-records {
+  font-size: 14px;
+  color: #333333;
+}
+
+/* Table Styles with Grid Lines */
+.table-responsive {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.recharge-table {
+  width: 100%;
+  min-width: 1300px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.recharge-table th, 
+.recharge-table td {
+  padding: 12px 12px;
+  border: 1px solid #e6e6e6;
+  color: #333333;
+  vertical-align: middle;
+}
+
+.recharge-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bank-info-cell {
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* Operate Button Style */
+.btn-operate {
+  background-color: #009688;
+  color: #ffffff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-operate:hover {
+  background-color: #00796b;
+}
+
+/* Approve Confirmation Popup */
+.recharge-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recharge-confirm-box {
+  width: 340px;
+  max-width: calc(100% - 32px);
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px 20px 18px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.recharge-confirm-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background-color: #fff3cd;
+  color: #e8a200;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recharge-confirm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.recharge-confirm-text {
+  font-size: 13px;
+  color: #777777;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.recharge-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.recharge-confirm-btn {
+  flex: 1;
+  height: 38px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.recharge-confirm-cancel {
+  background-color: #e9ecef;
+  color: #555555;
+}
+
+.recharge-confirm-ok {
+  background-color: #009688;
+  color: #ffffff;
+}
+
+.recharge-confirm-ok:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

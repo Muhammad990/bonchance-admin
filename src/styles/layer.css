@@ -1,0 +1,95 @@
+/*
+* Recreation of layui layer.css (default skin) — subset needed for
+* layer.msg dialogs (success / error / verify tips) used by the login page.
+* Source: https://app.tuihotelonline.site/static/admin/lib/layui/css/modules/layer/default/layer.css
+*/
+.layui-layer-shade{
+    position: fixed;
+    pointer-events: auto;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: .3;
+    z-index: 19891014;
+}
+.layui-layer{
+    -webkit-overflow-scrolling: touch;
+    position: fixed;
+    top: 150px;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    -webkit-background-clip: content;
+    border-radius: 2px;
+    box-shadow: 1px 1px 50px rgba(0,0,0,.3);
+    z-index: 19891016;
+    pointer-events: auto;
+}
+.layui-layer-close{
+    position: absolute;
+}
+.layui-layer-content{
+    position: relative;
+    padding: 20px;
+    line-height: 24px;
+    word-break: break-all;
+    overflow: hidden;
+    font-size: 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.layui-layer-dialog{
+    min-width: 260px;
+}
+.layui-layer-dialog .layui-layer-content{
+    font-size: 14px;
+}
+.layui-layer-msg{min-width:180px;border:1px solid #D3D4D3;box-shadow:none}
+.layui-layer-padding{padding:20px 20px 20px 55px;text-align:left}
+.layui-layer-ico{
+    background: url(/images/layer_icon.png) no-repeat;
+    position: absolute;
+    top: 16px;
+    left: 15px;
+    width: 30px;
+    height: 30px;
+}
+.layui-layer-ico0{background-position:0 0}
+.layui-layer-ico1{background-position:-30px 0}
+.layui-layer-ico2{background-position:-60px 0}
+.layui-layer-ico3{background-position:-90px 0}
+.layui-layer-ico4{background-position:-120px 0}
+.layui-layer-ico5{background-position:-150px 0}
+.layui-layer-ico6{background-position:-180px 0}
+.layui-layer-setwin{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 0;
+    line-height: initial;
+}
+/* msg 弹层默认垂直水平居中 — 位置由 JS 按 layer.js 同样方式计算 (px) */
+/* 动画 */
+.layui-layer-anim{
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    pointer-events: auto;
+}
+.layui-layer-anim-00{-webkit-animation-name:layer-bounceIn;animation-name:layer-bounceIn}
+.layui-layer-anim-06{-webkit-animation-name:layer-shake;animation-name:layer-shake}
+.layui-layer-fadeout{
+    -webkit-animation: layer-fadeOut .3s both;
+    animation: layer-fadeOut .3s both;
+}
+@keyframes layer-bounceIn{0%{opacity:0;-webkit-transform:scale(.5);-ms-transform:scale(.5);transform:scale(.5)}100%{opacity:1;-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1)}}
+@keyframes layer-shake{0%,100%{-webkit-transform:translateX(0);-ms-transform:translateX(0);transform:translateX(0)}10%,30%,50%,70%,90%{-webkit-transform:translateX(-10px);-ms-transform:translateX(-10px);transform:translateX(-10px)}20%,40%,60%,80%{-webkit-transform:translateX(10px);-ms-transform:translateX(10px);transform:translateX(10px)}}
+@keyframes layer-fadeOut{0%{opacity:1}100%{opacity:0}}
+/* msg 位移+缩放收尾 */
+@media screen and (max-width: 480px){
+    .layui-layer-dialog{max-width: 90%;}
+}

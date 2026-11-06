@@ -725,3 +725,102 @@
   padding: 2px 10px !important;
   border-radius: 10px !important;
 }
+
+/* Product Picker Table */
+.os-picker-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border: 1px solid #e4ecec !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+}
+
+.os-picker-table {
+  width: 100% !important;
+  min-width: 620px !important;
+  border-collapse: collapse !important;
+  font-size: 13px !important;
+}
+
+.os-picker-table th,
+.os-picker-table td {
+  padding: 10px 8px !important;
+  border-bottom: 1px solid #edf2f1 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.os-picker-table th {
+  background: #eef8f7 !important;
+  color: #4a6864 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+.os-picker-table th:nth-child(2),
+.os-picker-table td:nth-child(2) {
+  text-align: left !important;
+  min-width: 140px !important;
+}
+
+.os-picker-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.os-picker-table tbody tr:hover {
+  background: #f8fcfb !important;
+}
+
+.os-picker-multiplier {
+  width: 82px !important;
+  height: 34px !important;
+  border: 1px solid #cbd9d7 !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+  text-align: center !important;
+  color: #263c39 !important;
+  background: #ffffff !important;
+}
+
+.os-picker-multiplier:focus {
+  outline: none !important;
+  border-color: #009688 !important;
+  box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.12) !important;
+}
+
+.os-picker-select {
+  border: none !important;
+  border-radius: 5px !important;
+  padding: 7px 12px !important;
+  background: #009688 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+.os-picker-select:hover {
+  background: #007f73 !important;
+}
+
+.os-picker-select:disabled {
+  background: #cbd5d1 !important;
+  color: #6b7774 !important;
+  cursor: not-allowed !important;
+  opacity: 0.75 !important;
+}
+
+.os-picker-modal {
+  width: 760px !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.os-picker-row-selected td {
+  background: #fff4b8 !important;
+}
+
+.os-picker-select.selected {
+  background: #ffb800 !important;
+  color: #5c4300 !important;
+}

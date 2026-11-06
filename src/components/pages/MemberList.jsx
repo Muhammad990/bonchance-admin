@@ -44,6 +44,7 @@ const MemberList = () => {
   const [pickerProducts, setPickerProducts] = useState([]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerIndex, setPickerIndex] = useState(null);
+  const [pickerMultipliers, setPickerMultipliers] = useState({});
 
   const loadMembers = useCallback(async (f = {}) => {
     const params = new URLSearchParams();
@@ -439,12 +440,17 @@ const MemberList = () => {
   };
 
   const addToTimeline = (product) => {
+    const price = Number(product.price) || 0;
+    const multiplier = getPickerMultiplier(product);
+    const returnAmount = returnAmountForProduct(product, orderSettingMember);
     const entry = {
       productId: product._id,
       name: product.name,
       picture: product.picture || '',
-      price: Number(product.price) || 0,
+      price,
       rating: Number(product.rating) || 0,
+      multiplier,
+      returnAmount,
     };
     if (pickerIndex !== null) {
       setOrderSettingProducts((list) => list.map((p, i) => (i === pickerIndex ? entry : p)));
@@ -456,6 +462,58 @@ const MemberList = () => {
     }
     setPickerOpen(false);
     setPickerIndex(null);
+  };
+
+  const togglePickerSelection = (product) => {
+    if (pickerIndex !== null) {
+      const price = Number(product.price) || 0;
+      const multiplier = getPickerMultiplier(product);
+      const returnAmount = returnAmountForProduct(product, orderSettingMember);
+      if (Math.round(returnAmount * 100) > Math.round(price * 100)) {
+        setSettingsError('Return Amount cannot be greater than Product Price');
+        return;
+      }
+      const entry = {
+        productId: product._id,
+        name: product.name,
+        picture: product.picture || '',
+        price,
+        rating: Number(product.rating) || 0,
+        multiplier,
+        returnAmount,
+      };
+      setOrderSettingProducts((list) => list.map((p, i) => (i === pickerIndex ? entry : p)));
+      setPickerOpen(false);
+      setPickerIndex(null);
+      return;
+    }
+
+    const exists = orderSettingProducts.some((p) => p.productId === product._id);
+    if (exists) {
+      setOrderSettingProducts((list) => list.filter((p) => p.productId !== product._id));
+      setSettingsError(null);
+      return;
+    }
+
+    const price = Number(product.price) || 0;
+    const multiplier = getPickerMultiplier(product);
+    const returnAmount = returnAmountForProduct(product, orderSettingMember);
+    if (returnAmount > price) {
+      setSettingsError('Return Amount cannot be greater than Product Price');
+      return;
+    }
+    setOrderSettingProducts((list) => [
+      ...list,
+      {
+        productId: product._id,
+        name: product.name,
+        picture: product.picture || '',
+        price,
+        rating: Number(product.rating) || 0,
+        multiplier,
+        returnAmount,
+      },
+    ]);
   };
 
   const removeFromTimeline = (index) => {
@@ -711,6 +769,29 @@ const MemberList = () => {
     );
   };
 
+  const setPickerMultiplier = (productId, value) => {
+    setPickerMultipliers((current) => ({ ...current, [productId]: value }));
+  };
+
+  const getPickerMultiplier = (product) => {
+    const value = Number(pickerMultipliers[product._id]);
+    return Number.isFinite(value) && value >= 0 ? value : 1;
+  };
+
+  const commissionRateForMember = (member) => {
+    const level = levels.find((item) => item.name === member?.basicInfo?.level);
+    let rate = Number(level?.orderCommissionRate) || 0;
+    if (rate > 1) rate = rate / 100;
+    return rate;
+  };
+
+  const returnAmountForProduct = (product, member) => {
+    const price = Number(product.price) || 0;
+    const multiplier = getPickerMultiplier(product);
+    const baseProfit = price * commissionRateForMember(member);
+    return Math.round(baseProfit * multiplier * 100) / 100;
+  };
+
   return (
     <div className="member-container">
       {/* Top Filter Bar */}
@@ -907,7 +988,7 @@ const MemberList = () => {
                           )
                         }
                       >
-                        📊 Account to Data
+                        Account to Data
                       </button>
                     </div>
                     <div className="op-group-3">
@@ -976,7 +1057,7 @@ const MemberList = () => {
                       >
                         {item.accountInfo.type === 'Test User'
                           ? '👤 Set as Official'
-                          : '👤 Set as test'}
+                          : '👤 Set as a proxy'}
                       </button>
                       <button
                         className="op-btn btn-deep-orange"
@@ -1215,7 +1296,7 @@ const MemberList = () => {
                 )}
 
                 <button className="os-setpin" onClick={() => openPicker(null)}>
-                  <span className="os-setpin-icon">＋</span>
+                  <span className="os-setpin-icon">➕</span>
                   Set Pin — Add product to timeline
                 </button>
               </div>
@@ -1229,7 +1310,7 @@ const MemberList = () => {
                 onClick={saveOrderSetting}
                 disabled={settingsSaving}
               >
-                {settingsSaving ? 'Saving...' : '💾 Save'}
+                {settingsSaving ? 'Saving...' : '📌 Save'}
               </button>
             </div>
           </div>
@@ -1239,7 +1320,7 @@ const MemberList = () => {
       {/* Product Picker Modal */}
       {pickerOpen && (
         <div className="product-modal-overlay os-overlay" onClick={() => setPickerOpen(false)}>
-          <div className="product-modal member-modal os-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="product-modal member-modal os-modal os-picker-modal" onClick={(e) => e.stopPropagation()}>
             <div className="product-modal-header os-modal-header">
               <div>
                 <h3>{pickerIndex !== null ? 'Replace product' : 'Add product to timeline'}</h3>
@@ -1253,50 +1334,58 @@ const MemberList = () => {
               {pickerProducts.length === 0 ? (
                 <div className="os-empty">No products available.</div>
               ) : (
-                <>
-                  {pickerProducts.filter(
-                    (product) =>
-                      !orderSettingProducts.some((p) => p.productId === product._id)
-                  ).length === 0 ? (
-                    <div className="os-empty">
-                      <div className="os-empty-icon">🎉</div>
-                      All products are already in the timeline.
-                    </div>
-                  ) : (
-                    <div className="os-picker-grid">
-                      {pickerProducts
-                        .filter(
-                          (product) =>
-                            !orderSettingProducts.some((p) => p.productId === product._id)
-                        )
-                        .map((product) => (
-                          <button
-                            key={product._id}
-                            className="os-picker-card"
-                            onClick={() => addToTimeline(product)}
-                          >
-                            <div className="os-picker-thumb">
-                              {product.picture ? (
-                                <img
-                                  src={product.picture}
-                                  alt=""
-                                  onError={(e) => (e.currentTarget.style.display = 'none')}
-                                />
-                              ) : (
-                                <span>🛍️</span>
-                              )}
-                            </div>
-                            <div className="os-picker-name">{product.name}</div>
-                            <div className="os-picker-price">{product.price}</div>
-                            {product.rating ? (
-                              <div className="os-picker-rating">★ {product.rating}</div>
-                            ) : null}
-                            <div className="os-picker-add">{pickerIndex !== null ? 'Replace' : 'Add'}</div>
-                          </button>
-                        ))}
-                    </div>
-                  )}
-                </>
+                <div className="os-picker-table-wrap">
+                  <table className="os-picker-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Multiplier</th>
+                        <th>Return Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pickerProducts.map((product, index) => {
+                        const multiplier = getPickerMultiplier(product);
+                        const price = Number(product.price) || 0;
+                        const returnAmount = returnAmountForProduct(product, orderSettingMember);
+                        const isSelected = pickerIndex === null
+                          ? orderSettingProducts.some((p) => p.productId === product._id)
+                          : false;
+                        const isOverPrice = returnAmount > price;
+                        return (
+                          <tr key={product._id} className={isSelected ? 'os-picker-row-selected' : ''}>
+                            <td>{index + 1}</td>
+                            <td>{product.name}</td>
+                            <td>{price.toFixed(2)}</td>
+                            <td>
+                              <input
+                                className="os-picker-multiplier"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={pickerMultipliers[product._id] ?? 1}
+                                onChange={(event) => setPickerMultiplier(product._id, event.target.value)}
+                              />
+                            </td>
+                            <td>{returnAmount.toFixed(2)}</td>
+                            <td>
+                              <button
+                                className={`os-picker-select${isSelected ? ' selected' : ''}`}
+                                onClick={() => togglePickerSelection(product)}
+                                disabled={isOverPrice}
+                              >
+                                {isSelected ? 'SELECTED' : 'SELECT'}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>

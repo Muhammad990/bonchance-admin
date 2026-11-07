@@ -94,6 +94,8 @@
   border-collapse: collapse;
   text-align: left;
   font-size: 14px;
+  table-layout: fixed;
+  min-width: 900px;
 }
 
 .product-table th {
@@ -109,6 +111,53 @@
   border-bottom: 1px solid #e6e6e6;
   color: #333333;
   vertical-align: middle;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-table th:nth-child(1),
+.product-table td:nth-child(1) {
+  width: 9%;
+}
+
+.product-table th:nth-child(2),
+.product-table td:nth-child(2) {
+  width: 14%;
+}
+
+.product-table th:nth-child(3),
+.product-table td:nth-child(3) {
+  width: 25%;
+}
+
+.product-table th:nth-child(4),
+.product-table td:nth-child(4) {
+  width: 12%;
+}
+
+.product-table th:nth-child(5),
+.product-table td:nth-child(5) {
+  width: 24%;
+}
+
+.product-table th:nth-child(6),
+.product-table td:nth-child(6) {
+  width: 16%;
+}
+
+.product-table td:nth-child(3) {
+  white-space: normal;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.product-table .action-buttons {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .product-thumbnail {

@@ -1547,3 +1547,78 @@
     height: 44px !important;
   }
 }
+
+/* =========================================================
+   FINAL FIX: keep Set Pin popup below the admin top bar
+   and outside the left sidebar; no overlap on small widths.
+   ========================================================= */
+.product-modal-overlay.os-overlay {
+  top: 45px !important;
+  bottom: 0 !important;
+  left: 220px !important;
+  right: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.x-admin-shell.nav-closed .product-modal-overlay.os-overlay {
+  left: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+  .product-modal-overlay.os-overlay {
+    top: 45px !important;
+    left: 60px !important;
+    right: 0 !important;
+    padding: 8px !important;
+  }
+
+  .x-admin-shell.menu-expanded .product-modal-overlay.os-overlay {
+    left: 200px !important;
+  }
+
+  .x-admin-shell.menu-expanded.nav-closed .product-modal-overlay.os-overlay {
+    left: 0 !important;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .os-modal.os-picker-modal .os-picker-table-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .os-modal.os-picker-modal .os-picker-table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .os-modal.os-picker-modal .os-picker-table tbody tr {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .product-modal-overlay.os-overlay {
+    padding: 0 !important;
+  }
+
+  .os-modal.os-picker-modal {
+    border-radius: 8px !important;
+  }
+
+  .os-modal.os-picker-modal .os-modal-header,
+  .os-modal.os-picker-modal .product-modal-header {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .os-modal.os-picker-modal .os-body {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}

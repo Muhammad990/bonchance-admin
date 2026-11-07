@@ -45,6 +45,25 @@ const MemberList = () => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerIndex, setPickerIndex] = useState(null);
   const [pickerMultipliers, setPickerMultipliers] = useState({});
+  const [pickerPriceStart, setPickerPriceStart] = useState('');
+  const [pickerPriceEnd, setPickerPriceEnd] = useState('');
+  const [appliedPickerRange, setAppliedPickerRange] = useState(null);
+
+  const pickerRangeStart = Number(pickerPriceStart);
+  const pickerRangeEnd = Number(pickerPriceEnd);
+  const pickerRangeInvalid =
+    pickerPriceStart !== '' &&
+    pickerPriceEnd !== '' &&
+    Number.isFinite(pickerRangeStart) &&
+    Number.isFinite(pickerRangeEnd) &&
+    pickerRangeStart > pickerRangeEnd;
+  const filteredPickerProducts = appliedPickerRange
+    ? pickerProducts.filter((product) => {
+        const price = Number(product.price) || 0;
+        const [start, end] = appliedPickerRange;
+        return price >= start && price <= end;
+      })
+    : pickerProducts;
 
   const loadMembers = useCallback(async (f = {}) => {
     const params = new URLSearchParams();
@@ -435,6 +454,9 @@ const MemberList = () => {
   const openPicker = (index) => {
     setSettingsError(null);
     setSettingsMsg(null);
+    setPickerPriceStart('');
+    setPickerPriceEnd('');
+    setAppliedPickerRange(null);
     setPickerIndex(index);
     setPickerOpen(true);
   };
@@ -1331,8 +1353,41 @@ const MemberList = () => {
               </button>
             </div>
             <div className="product-modal-body os-body">
-              {pickerProducts.length === 0 ? (
-                <div className="os-empty">No products available.</div>
+              <div className="os-filter-bar">
+                <div className="os-price-range">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    className={`os-price-input${pickerRangeInvalid ? ' invalid' : ''}`}
+                    placeholder="Starting price"
+                    value={pickerPriceStart}
+                    onChange={(e) => setPickerPriceStart(e.target.value)}
+                  />
+                  <span className="os-price-separator">—</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    className={`os-price-input${pickerRangeInvalid ? ' invalid' : ''}`}
+                    placeholder="Ending price"
+                    value={pickerPriceEnd}
+                    onChange={(e) => setPickerPriceEnd(e.target.value)}
+                  />
+                </div>
+                <button
+                  className="os-apply-range"
+                  disabled={pickerRangeInvalid || pickerPriceStart === '' || pickerPriceEnd === ''}
+                  onClick={() => setAppliedPickerRange([pickerRangeStart, pickerRangeEnd])}
+                >
+                  Search
+                </button>
+              </div>
+              {pickerRangeInvalid && (
+                <div className="os-range-error">Starting range must not be greater than ending range</div>
+              )}
+              {filteredPickerProducts.length === 0 ? (
+                <div className="os-empty">No products found in this price range.</div>
               ) : (
                 <div className="os-picker-table-wrap">
                   <table className="os-picker-table">
@@ -1347,7 +1402,7 @@ const MemberList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {pickerProducts.map((product, index) => {
+                      {filteredPickerProducts.map((product, index) => {
                         const multiplier = getPickerMultiplier(product);
                         const price = Number(product.price) || 0;
                         const returnAmount = returnAmountForProduct(product, orderSettingMember);

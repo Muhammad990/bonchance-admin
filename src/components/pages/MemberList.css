@@ -824,3 +824,70 @@
   background: #ffb800 !important;
   color: #5c4300 !important;
 }
+
+/* Picker price range filter */
+.os-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.os-price-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.os-price-input {
+  width: 120px;
+  height: 36px;
+  border: 1px solid #cbd9d7;
+  border-radius: 7px;
+  padding: 6px 10px;
+  color: #263c39;
+  background: #ffffff;
+}
+
+.os-price-input:focus {
+  outline: none;
+  border-color: #009688;
+  box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.12);
+}
+
+.os-price-input.invalid {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.os-price-separator {
+  color: #82938f;
+}
+
+.os-apply-range {
+  height: 36px;
+  border: none;
+  border-radius: 7px;
+  padding: 0 16px;
+  background: #009688;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.os-apply-range:hover:not(:disabled) {
+  background: #007f73;
+}
+
+.os-apply-range:disabled {
+  background: #cbd5d1;
+  color: #6b7774;
+  cursor: not-allowed;
+}
+
+.os-range-error {
+  margin: -2px 0 10px;
+  color: #e74c3c;
+  font-size: 12px;
+  font-weight: 700;
+}

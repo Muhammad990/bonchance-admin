@@ -45,6 +45,7 @@ const MemberList = () => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerIndex, setPickerIndex] = useState(null);
   const [pickerMultipliers, setPickerMultipliers] = useState({});
+  const [pickerReturns, setPickerReturns] = useState({});
   const [pickerPriceStart, setPickerPriceStart] = useState('');
   const [pickerPriceEnd, setPickerPriceEnd] = useState('');
   const [appliedPickerRange, setAppliedPickerRange] = useState(null);
@@ -457,6 +458,18 @@ const MemberList = () => {
     setPickerPriceStart('');
     setPickerPriceEnd('');
     setAppliedPickerRange(null);
+    const existing = index !== null ? orderSettingProducts[index] : null;
+    setPickerReturns(
+      existing && existing.returnAmount !== undefined && existing.returnAmount !== null
+        ? { [existing.productId]: String(existing.returnAmount) }
+        : {}
+    );
+    if (existing) {
+      setPickerMultipliers((current) => ({
+        ...current,
+        [existing.productId]: existing.multiplier ?? 1,
+      }));
+    }
     setPickerIndex(index);
     setPickerOpen(true);
   };
@@ -464,7 +477,7 @@ const MemberList = () => {
   const addToTimeline = (product) => {
     const price = Number(product.price) || 0;
     const multiplier = getPickerMultiplier(product);
-    const returnAmount = returnAmountForProduct(product, orderSettingMember);
+    const returnAmount = pickerReturnAmountFor(product);
     const entry = {
       productId: product._id,
       name: product.name,
@@ -490,7 +503,7 @@ const MemberList = () => {
     if (pickerIndex !== null) {
       const price = Number(product.price) || 0;
       const multiplier = getPickerMultiplier(product);
-      const returnAmount = returnAmountForProduct(product, orderSettingMember);
+      const returnAmount = pickerReturnAmountFor(product);
       if (Math.round(returnAmount * 100) > Math.round(price * 100)) {
         setSettingsError('Return Amount cannot be greater than Product Price');
         return;
@@ -519,7 +532,7 @@ const MemberList = () => {
 
     const price = Number(product.price) || 0;
     const multiplier = getPickerMultiplier(product);
-    const returnAmount = returnAmountForProduct(product, orderSettingMember);
+    const returnAmount = pickerReturnAmountFor(product);
     if (returnAmount > price) {
       setSettingsError('Return Amount cannot be greater than Product Price');
       return;
@@ -793,6 +806,16 @@ const MemberList = () => {
 
   const setPickerMultiplier = (productId, value) => {
     setPickerMultipliers((current) => ({ ...current, [productId]: value }));
+    setPickerReturns((current) => {
+      if (!(productId in current)) return current;
+      const next = { ...current };
+      delete next[productId];
+      return next;
+    });
+  };
+
+  const setPickerReturn = (productId, value) => {
+    setPickerReturns((current) => ({ ...current, [productId]: value }));
   };
 
   const getPickerMultiplier = (product) => {
@@ -812,6 +835,13 @@ const MemberList = () => {
     const multiplier = getPickerMultiplier(product);
     const baseProfit = price * commissionRateForMember(member);
     return Math.round(baseProfit * multiplier * 100) / 100;
+  };
+
+  const pickerReturnAmountFor = (product) => {
+    if (Object.prototype.hasOwnProperty.call(pickerReturns, product._id)) {
+      return Number(pickerReturns[product._id]) || 0;
+    }
+    return returnAmountForProduct(product, orderSettingMember);
   };
 
   return (
@@ -1345,8 +1375,7 @@ const MemberList = () => {
           <div className="product-modal member-modal os-modal os-picker-modal" onClick={(e) => e.stopPropagation()}>
             <div className="product-modal-header os-modal-header">
               <div>
-                <h3>{pickerIndex !== null ? 'Replace product' : 'Add product to timeline'}</h3>
-                <span className="os-subtitle">Already added products are hidden</span>
+                <h3>{`Set Manual Pin for Order #${pickerIndex !== null ? pickerIndex + 1 : orderSettingProducts.length + 1}`}</h3>
               </div>
               <button className="product-modal-close" onClick={() => setPickerOpen(false)}>
                 &times;
@@ -1354,13 +1383,14 @@ const MemberList = () => {
             </div>
             <div className="product-modal-body os-body">
               <div className="os-filter-bar">
+                <span className="os-filter-label">Price Range</span>
                 <div className="os-price-range">
                   <input
                     type="number"
                     min="0"
                     step="0.01"
                     className={`os-price-input${pickerRangeInvalid ? ' invalid' : ''}`}
-                    placeholder="Starting price"
+                    placeholder="Min"
                     value={pickerPriceStart}
                     onChange={(e) => setPickerPriceStart(e.target.value)}
                   />
@@ -1370,7 +1400,7 @@ const MemberList = () => {
                     min="0"
                     step="0.01"
                     className={`os-price-input${pickerRangeInvalid ? ' invalid' : ''}`}
-                    placeholder="Ending price"
+                    placeholder="Max"
                     value={pickerPriceEnd}
                     onChange={(e) => setPickerPriceEnd(e.target.value)}
                   />
@@ -1391,6 +1421,14 @@ const MemberList = () => {
               ) : (
                 <div className="os-picker-table-wrap">
                   <table className="os-picker-table">
+                    <colgroup>
+                      <col className="os-col-id" />
+                      <col className="os-col-name" />
+                      <col className="os-col-price" />
+                      <col className="os-col-multiplier" />
+                      <col className="os-col-return" />
+                      <col className="os-col-action" />
+                    </colgroup>
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -1405,14 +1443,21 @@ const MemberList = () => {
                       {filteredPickerProducts.map((product, index) => {
                         const multiplier = getPickerMultiplier(product);
                         const price = Number(product.price) || 0;
-                        const returnAmount = returnAmountForProduct(product, orderSettingMember);
+                        const returnAmount = pickerReturnAmountFor(product);
+                        const hasCustomReturn = Object.prototype.hasOwnProperty.call(
+                          pickerReturns,
+                          product._id
+                        );
+                        const returnValue = hasCustomReturn
+                          ? pickerReturns[product._id]
+                          : returnAmount.toFixed(2);
                         const isSelected = pickerIndex === null
                           ? orderSettingProducts.some((p) => p.productId === product._id)
                           : false;
                         const isOverPrice = returnAmount > price;
                         return (
                           <tr key={product._id} className={isSelected ? 'os-picker-row-selected' : ''}>
-                            <td>{index + 1}</td>
+                            <td>{product.pId ?? index + 1}</td>
                             <td>{product.name}</td>
                             <td>{price.toFixed(2)}</td>
                             <td>
@@ -1425,7 +1470,18 @@ const MemberList = () => {
                                 onChange={(event) => setPickerMultiplier(product._id, event.target.value)}
                               />
                             </td>
-                            <td>{returnAmount.toFixed(2)}</td>
+                            <td>
+                              <input
+                                className="os-picker-return"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={returnValue}
+                                onChange={(event) =>
+                                  setPickerReturn(product._id, event.target.value)
+                                }
+                              />
+                            </td>
                             <td>
                               <button
                                 className={`os-picker-select${isSelected ? ' selected' : ''}`}

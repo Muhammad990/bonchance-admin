@@ -19,6 +19,8 @@ import ViewTeam from './ViewTeam.jsx';
 import AccountToData from './AccountToData.jsx';
 import ChangePassword from './ChangePassword.jsx';
 import SystemSettings from './SystemSettings.jsx';
+import BasicSetting from './BasicSetting.jsx';
+import ChangeUsername from './ChangeUsername.jsx';
 
 export const PAGE_COMPONENTS = {
   'Product List': ProductList,
@@ -31,8 +33,11 @@ export const PAGE_COMPONENTS = {
   'Wallet Details': WalletDetails,
   'Order List': OrderList,
   'Add Order': AddOrder,
+  'Credentials': ChangePassword,
   'Change Password': ChangePassword,
   'System Settings': SystemSettings,
+  'Basic Setting': BasicSetting,
+  'Change Username': ChangeUsername,
 };
 
 // Returns the page component for a tab title, or null if not registered

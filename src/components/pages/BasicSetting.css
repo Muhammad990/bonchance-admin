@@ -1,0 +1,143 @@
+/* Basic Setting page — matches the existing admin panel theme */
+
+.bs-container {
+  padding: 20px;
+  background-color: #f2f2f2;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.bs-card {
+  max-width: 680px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  padding: 24px 28px 28px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Card header */
+.bs-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 16px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.bs-head .layui-icon {
+  font-size: 22px;
+  color: #009688;
+}
+
+.bs-head h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #333333;
+}
+
+.bs-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* One form row: right-aligned label + input */
+.bs-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 35px;
+}
+
+.bs-row:last-of-type {
+  margin-bottom: 35px;
+}
+
+.bs-label {
+  flex: 0 0 140px;
+  width: 140px;
+  text-align: right;
+  padding-right: 16px;
+  line-height: 38px;
+  font-size: 13px;
+  color: #555555;
+  box-sizing: border-box;
+}
+
+.bs-required {
+  color: #ff0000;
+  margin-left: 3px;
+}
+
+.bs-control {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Input / select base */
+.bs-input {
+  box-sizing: border-box;
+  width: 320px;
+  max-width: 100%;
+  height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 2px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #333333;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.bs-input:focus {
+  border-color: #009688;
+}
+
+/* Small gray hint beside the field */
+.bs-hint {
+  font-size: 12px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+/* Buttons */
+.bs-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.bs-btn {
+  height: 38px;
+  min-width: 110px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 2px;
+  background-color: #009688;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.bs-btn:hover {
+  opacity: 0.8;
+}
+
+/* Reset: white background, gray border */
+.bs-btn-reset {
+  background-color: #ffffff;
+  color: #666666;
+  border: 1px solid #d2d2d2;
+}
+
+.bs-btn-reset:hover {
+  background-color: #f7f7f7;
+  opacity: 1;
+}

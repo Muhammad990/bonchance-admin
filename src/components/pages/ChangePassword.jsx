@@ -15,6 +15,7 @@ const ChangePassword = ({ onClose }) => {
   const [saving, setSaving] = useState(false);
 
   const session = readSession();
+
   const updateField = (key) => (e) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
   const toggleShow = (key) => () =>

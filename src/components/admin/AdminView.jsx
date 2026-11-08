@@ -48,7 +48,10 @@ const MENUS = [
   {
     title: "System Management",
     icon: "layui-icon-set",
-    children: [{ title: "System Settings", icon: "layui-icon-circle-dot" }],
+    children: [
+      { title: "Basic Setting", icon: "layui-icon-circle-dot" },
+      { title: "System Settings", icon: "layui-icon-circle-dot" },
+    ],
   },
 ];
 
@@ -64,6 +67,8 @@ export default function AdminView({ username, onLogout }) {
   const [stats, setStats] = useState(null); // desktop dashboard stats
   const [userMenuOpen, setUserMenuOpen] = useState(false); // top-right admin dropdown
   const userMenuRef = useRef(null);
+
+  const [displayUsername, setDisplayUsername] = useState(username || 'admin');
 
   const todayStr = () => {
     const d = new Date();
@@ -295,10 +300,22 @@ export default function AdminView({ username, onLogout }) {
                 setUserMenuOpen((v) => !v);
               }}
             >
-              {username || "admin"}
+              {displayUsername}
               <i className="layui-nav-more" />
             </a>
             <dl className="admin-user-menu">
+              <dd>
+                <a
+                  href="javascript:;"
+                  onClick={() => {
+                    setUserMenuOpen(false);
+                    openTab("Change Username");
+                  }}
+                >
+                  <i className="layui-icon layui-icon-username" />
+                  &nbsp;Change Username
+                </a>
+              </dd>
               <dd>
                 <a
                   href="javascript:;"

@@ -40,6 +40,14 @@ export default function App() {
     setView('login');
   };
 
+  useEffect(() => {
+    const handleUsernameChanged = (event) => {
+      setUsername(String(event.detail || '').trim());
+    };
+    window.addEventListener('admin-username-changed', handleUsernameChanged);
+    return () => window.removeEventListener('admin-username-changed', handleUsernameChanged);
+  }, []);
+
   // Session check ke waqt original jaisa grey background
   if (view === 'loading') {
     return <div style={{ minHeight: '100vh', background: '#f1f1f1' }} />;

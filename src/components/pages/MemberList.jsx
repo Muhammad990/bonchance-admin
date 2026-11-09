@@ -411,7 +411,8 @@ const MemberList = () => {
 
   const dailyVolumeOf = (levelName) => {
     const l = levels.find((x) => x.name === levelName);
-    return l && l.dailyOrderVolume ? l.dailyOrderVolume : 30;
+    const volume = Number(l?.dailyOrderVolume);
+    return Number.isFinite(volume) && volume > 0 ? Math.floor(volume) : 30;
   };
 
   const loadPickerProducts = async () => {
@@ -452,13 +453,15 @@ const MemberList = () => {
     setPickerIndex(null);
   };
 
-  const openPicker = (index) => {
+  const openPicker = (orderNumber) => {
     setSettingsError(null);
     setSettingsMsg(null);
     setPickerPriceStart('');
     setPickerPriceEnd('');
     setAppliedPickerRange(null);
-    const existing = index !== null ? orderSettingProducts[index] : null;
+    const existing = orderNumber !== null
+      ? orderSettingProducts.find((product) => Number(product.orderNumber) === orderNumber)
+      : null;
     setPickerReturns(
       existing && existing.returnAmount !== undefined && existing.returnAmount !== null
         ? { [existing.productId]: String(existing.returnAmount) }
@@ -470,16 +473,22 @@ const MemberList = () => {
         [existing.productId]: existing.multiplier ?? 1,
       }));
     }
-    setPickerIndex(index);
+    setPickerIndex(orderNumber);
     setPickerOpen(true);
   };
 
-  const addToTimeline = (product) => {
+  const togglePickerSelection = (product) => {
     const price = Number(product.price) || 0;
     const multiplier = getPickerMultiplier(product);
     const returnAmount = pickerReturnAmountFor(product);
+    if (Math.round(returnAmount * 100) > Math.round(price * 100)) {
+      setSettingsError('Return Amount cannot be greater than Product Price');
+      return;
+    }
     const entry = {
+      orderNumber: pickerIndex,
       productId: product._id,
+      displayId: String(product.pId ?? product._id),
       name: product.name,
       picture: product.picture || '',
       price,
@@ -487,72 +496,18 @@ const MemberList = () => {
       multiplier,
       returnAmount,
     };
-    if (pickerIndex !== null) {
-      setOrderSettingProducts((list) => list.map((p, i) => (i === pickerIndex ? entry : p)));
-    } else if (orderSettingProducts.some((p) => p.productId === product._id)) {
-      setSettingsError('This product is already in the timeline');
-      return;
-    } else {
-      setOrderSettingProducts((list) => [...list, entry]);
-    }
+    setOrderSettingProducts((list) => [
+      ...list.filter((item) => Number(item.orderNumber) !== pickerIndex),
+      entry,
+    ].sort((a, b) => Number(a.orderNumber) - Number(b.orderNumber)));
     setPickerOpen(false);
     setPickerIndex(null);
   };
 
-  const togglePickerSelection = (product) => {
-    if (pickerIndex !== null) {
-      const price = Number(product.price) || 0;
-      const multiplier = getPickerMultiplier(product);
-      const returnAmount = pickerReturnAmountFor(product);
-      if (Math.round(returnAmount * 100) > Math.round(price * 100)) {
-        setSettingsError('Return Amount cannot be greater than Product Price');
-        return;
-      }
-      const entry = {
-        productId: product._id,
-        name: product.name,
-        picture: product.picture || '',
-        price,
-        rating: Number(product.rating) || 0,
-        multiplier,
-        returnAmount,
-      };
-      setOrderSettingProducts((list) => list.map((p, i) => (i === pickerIndex ? entry : p)));
-      setPickerOpen(false);
-      setPickerIndex(null);
-      return;
-    }
-
-    const exists = orderSettingProducts.some((p) => p.productId === product._id);
-    if (exists) {
-      setOrderSettingProducts((list) => list.filter((p) => p.productId !== product._id));
-      setSettingsError(null);
-      return;
-    }
-
-    const price = Number(product.price) || 0;
-    const multiplier = getPickerMultiplier(product);
-    const returnAmount = pickerReturnAmountFor(product);
-    if (returnAmount > price) {
-      setSettingsError('Return Amount cannot be greater than Product Price');
-      return;
-    }
-    setOrderSettingProducts((list) => [
-      ...list,
-      {
-        productId: product._id,
-        name: product.name,
-        picture: product.picture || '',
-        price,
-        rating: Number(product.rating) || 0,
-        multiplier,
-        returnAmount,
-      },
-    ]);
-  };
-
-  const removeFromTimeline = (index) => {
-    setOrderSettingProducts((list) => list.filter((_, i) => i !== index));
+  const removeOrderPin = (orderNumber) => {
+    setOrderSettingProducts((list) =>
+      list.filter((product) => Number(product.orderNumber) !== orderNumber)
+    );
   };
 
   const saveOrderSetting = async () => {
@@ -1290,67 +1245,80 @@ const MemberList = () => {
                   <span className="os-chip-value">{dailyVolumeOf(orderSettingMember.basicInfo.level)}</span>
                 </div>
                 <div className="os-chip">
-                  <span className="os-chip-label">Added</span>
+                  <span className="os-chip-label">Pinned orders</span>
                   <span className="os-chip-value">{orderSettingProducts.length}</span>
                 </div>
               </div>
               <div className="os-hint">
-                Timeline products are served in order (top first), one per order. After the list is
-                finished, products are chosen randomly.
+                Only rows with a saved pin use that product. All other orders remain random.
               </div>
               {settingsMsg && <div className="product-modal-ok">{settingsMsg}</div>}
               {settingsError && <div className="product-modal-error">{settingsError}</div>}
 
               <div className="os-list-wrap">
-                <div className="os-list-title">Timeline</div>
+                <div className="os-list-title">Daily Orders</div>
                 {!orderSettingLoaded ? (
-                  <div className="os-empty">Loading timeline...</div>
-                ) : orderSettingProducts.length === 0 ? (
-                  <div className="os-empty">
-                    <div className="os-empty-icon">🗒️</div>
-                    Timeline is empty — tap "Set Pin" to add products.
-                  </div>
+                  <div className="os-empty">Loading orders...</div>
                 ) : (
-                  <div className="os-timeline">
-                    {orderSettingProducts.map((p, i) => (
-                      <div className="os-item" key={`${p.productId}-${i}`}>
-                        <div className="os-item-index">{i + 1}</div>
-                        {p.picture && (
-                          <img
-                            className="os-item-img"
-                            src={p.picture}
-                            alt=""
-                            onError={(e) => (e.currentTarget.style.display = 'none')}
-                          />
+                  <div className="os-orders-table-wrap">
+                    <table className="os-orders-table">
+                      <thead>
+                        <tr>
+                          <th>Order #</th>
+                          <th>Status</th>
+                          <th>Product</th>
+                          <th>Return (Amount)</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.from(
+                          { length: dailyVolumeOf(orderSettingMember.basicInfo.level) },
+                          (_, index) => {
+                            const orderNumber = index + 1;
+                            const pin = orderSettingProducts.find(
+                              (product) => Number(product.orderNumber) === orderNumber
+                            );
+                            return (
+                              <tr key={orderNumber}>
+                                <td>#{orderNumber}</td>
+                                <td className={pin ? 'os-order-manual' : 'os-order-random'}>
+                                  {pin ? 'MANUAL PIN' : 'RANDOM'}
+                                </td>
+                                <td>
+                                  {pin
+                                    ? `ID: ${pin.displayId || pin.productId} (${pin.name || 'Product'}, Pinned x${pin.multiplier ?? 1})`
+                                    : '-- Automatic Selection --'}
+                                </td>
+                                <td>
+                                  {pin
+                                    ? Number(pin.returnAmount || 0).toFixed(2)
+                                    : 'Calculated from level'}
+                                </td>
+                                <td className="os-order-actions">
+                                  <button
+                                    className="os-order-setpin"
+                                    onClick={() => openPicker(orderNumber)}
+                                  >
+                                    {pin ? 'Change Pin' : 'Set Pin'}
+                                  </button>
+                                  {pin && (
+                                    <button
+                                      className="os-order-clear"
+                                      onClick={() => removeOrderPin(orderNumber)}
+                                    >
+                                      Clear
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          }
                         )}
-                        <div className="os-item-info">
-                          <div className="os-item-name">{p.name || '—'}</div>
-                          <div className="os-item-meta">
-                            <span className="os-item-price">{p.price}</span>
-                            {p.rating ? <span className="os-item-rating">★ {p.rating}</span> : null}
-                          </div>
-                        </div>
-                        <div className="os-item-actions">
-                          <button className="os-item-btn edit" onClick={() => openPicker(i)} title="Edit">
-                            ✎
-                          </button>
-                          <button
-                            className="os-item-btn del"
-                            onClick={() => removeFromTimeline(i)}
-                            title="Delete"
-                          >
-                            🗑
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-
-                <button className="os-setpin" onClick={() => openPicker(null)}>
-                  <span className="os-setpin-icon">➕</span>
-                  Set Pin — Add product to timeline
-                </button>
               </div>
             </div>
             <div className="product-modal-footer">
@@ -1375,7 +1343,7 @@ const MemberList = () => {
           <div className="product-modal member-modal os-modal os-picker-modal" onClick={(e) => e.stopPropagation()}>
             <div className="product-modal-header os-modal-header">
               <div>
-                <h3>{`Set Manual Pin for Order #${pickerIndex !== null ? pickerIndex + 1 : orderSettingProducts.length + 1}`}</h3>
+                <h3>{`Set Manual Pin for Order #${pickerIndex}`}</h3>
               </div>
               <button className="product-modal-close" onClick={() => setPickerOpen(false)}>
                 &times;

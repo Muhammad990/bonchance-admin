@@ -914,7 +914,7 @@ const MemberList = () => {
                     Total Withdrawals: {item.walletInfo.totalWithdrawals}<br/>
                     Total Commissions: {item.walletInfo.totalCommissions}
                   </td>
-                  <td>{item.taskStatus}</td>
+                  <td>{item.taskCount}/{dailyVolumeOf(item.basicInfo.level)}</td>
                   <td>{item.invitationCode}</td>
                   <td>
                     Login time: {item.loginInfo.loginTime}<br/>

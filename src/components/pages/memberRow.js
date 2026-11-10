@@ -23,6 +23,7 @@ export const toRow = (m) => ({
     totalWithdrawals: Number(m.totalWithdrawals || 0).toFixed(2),
     totalCommissions: Number(m.totalCommissions || 0).toFixed(2),
   },
+  taskCount: Number(m.taskStatus) || 0,
   taskStatus: `${m.taskStatus ?? 0}/30`,
   invitationCode: m.invitationCode || '-',
   invitationCodeRaw: m.invitationCode || '',

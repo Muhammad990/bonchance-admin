@@ -946,7 +946,7 @@ const MemberList = () => {
                         onClick={() =>
                           openModal('confirm', item, {
                             confirmTitle: 'Reset Order',
-                            confirmMessage: `Reset the order setting for "${item.basicInfo.nickname}"? It will return to random selection.`,
+                            confirmMessage: `Reset all orders and the task status order count for "${item.basicInfo.nickname}"? Completed and pending orders will be cleared and the order selection will return to random selection.`,
                             confirmAction: 'resetOrder',
                           })
                         }
